@@ -1,4 +1,5 @@
 import { Tally, Process, Bytes, u128, Console } from "@seda-protocol/as-sdk/assembly";
+import { median } from "./helpers";
 
 /**
  * Executes the tally phase within the SEDA network.
@@ -33,18 +34,3 @@ export function tallyPhase(): void {
   }
 }
 
-/**
- * Function to calculate the median of an array of unsigned integers.
- * @param numbers - Array of u64 numbers
- * @returns The median value
- */
-function median(numbers: u128[]): u128 {
-  const sorted: u128[] = numbers.sort();
-  const middle = i32(Math.floor(sorted.length / 2));
-
-  if (sorted.length % 2 === 0) {
-    return u128.div(u128.add(sorted[middle - 1], sorted[middle]), u128.from(2));
-  }
-
-  return sorted[middle];
-}
