@@ -11,7 +11,7 @@ import { median } from "./helpers";
 class SpreadProfilePrice {
   spreadProfile!: string;
   bidSpread!: string;
-  bid!: string;
+  bid!: f64;
 }
 
 @json
@@ -19,8 +19,6 @@ class PriceData {
   spreadProfilePrices!: SpreadProfilePrice[];
   ts!: string;
 }
-
-
 
 /**
  * Executes the data request phase within the SEDA network.
@@ -50,20 +48,20 @@ export function executionPhase(): void {
   
   const bidPrices: u128[] = [];
 
-  Console.log("get here")
   for (let i = 0; i < responseAsJson.length; i++){ 
     const dataSubSet = responseAsJson[i];
     for (let n = 0; n < dataSubSet.spreadProfilePrices.length; n++) {
-      const priceFloat: f32 = f32.parse(dataSubSet.spreadProfilePrices[n].bid);
+      const priceFloat: f64 = dataSubSet.spreadProfilePrices[n].bid;
       if (isNaN(priceFloat)) {
         // Report the failure to the SEDA network with an error code of 1.
         Process.error(Bytes.fromUtf8String(`Error while parsing price data: ${dataSubSet.spreadProfilePrices[n].bid}`));
       }
-      // Convert to integer but multiply by 100 to retain 2 decimal precision
-      const priceInt = u128.from(priceFloat * 100);
+      // Convert to integer but multiply by 10000 to retain 4 decimal precision
+      const priceInt = u128.from(priceFloat * 10000);
       bidPrices.push(priceInt)
     }
   }
+  
   
   const medianBid = median(bidPrices);
 
