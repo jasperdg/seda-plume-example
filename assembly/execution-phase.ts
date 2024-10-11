@@ -10,7 +10,7 @@ import { median } from "./helpers";
 @json
 class SpreadProfilePrice {
   spreadProfile!: string;
-  bidSpread!: string;
+  bidSpread!: f32;
   bid!: f64;
 }
 
